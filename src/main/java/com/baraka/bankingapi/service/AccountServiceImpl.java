@@ -85,12 +85,17 @@ public class AccountServiceImpl implements AccountService {
                 .amount(moneyTransfer.getAmount())
                 .build();
         withdrawal(moneyWithdrawal);
-
-        MoneyOperatingDto moneyDeposit = MoneyOperatingDto.builder()
-                .accountId(moneyTransfer.getToAccountId())
-                .amount(moneyTransfer.getAmount())
-                .build();
-        deposit(moneyDeposit);
+        try {
+// rollback if something was wrong after money was substructed from first account
+            MoneyOperatingDto moneyDeposit = MoneyOperatingDto.builder()
+                    .accountId(moneyTransfer.getToAccountId())
+                    .amount(moneyTransfer.getAmount())
+                    .build();
+            deposit(moneyDeposit);
+        } catch (Exception e) {
+            deposit(moneyWithdrawal);
+            throw e;
+        }
 
     }
 
