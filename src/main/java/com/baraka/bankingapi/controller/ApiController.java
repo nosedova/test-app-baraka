@@ -2,6 +2,7 @@ package com.baraka.bankingapi.controller;
 
 import com.baraka.bankingapi.model.*;
 import com.baraka.bankingapi.service.AccountService;
+import com.baraka.bankingapi.service.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,12 @@ public class ApiController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ApiController.class);
 
     private final AccountService accountService;
+    private final TransactionService transactionService;
 
     @Autowired
-    public ApiController(AccountService accountService) {
+    public ApiController(AccountService accountService, TransactionService transactionService) {
         this.accountService = accountService;
+        this.transactionService = transactionService;
     }
 
     @PostMapping(value = "/accounts", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -63,7 +66,7 @@ public class ApiController {
     ExistingAccountDto deposit(@PathVariable String id, @PathVariable BigDecimal amount) {
         checkAmount(amount);
         LOGGER.info("deposit to accountId={}, amount= {}", id, amount);
-        ExistingAccountDto account = accountService.deposit(MoneyOperatingDto.builder().accountId(id).amount(amount).build());
+        ExistingAccountDto account = transactionService.deposit(MoneyOperatingDto.builder().accountId(id).amount(amount).build());
         LOGGER.info("deposit to accountId={}, amount= {} succeed", id, amount);
 
         return account;
@@ -73,7 +76,7 @@ public class ApiController {
     ExistingAccountDto withdrawal(@PathVariable String id, @PathVariable BigDecimal amount) {
         checkAmount(amount);
         LOGGER.info("withdrawal to accountId={}, amount= {}", id, amount);
-        ExistingAccountDto account = accountService.withdrawal(MoneyOperatingDto.builder().accountId(id).amount(amount).build());
+        ExistingAccountDto account = transactionService.withdrawal(MoneyOperatingDto.builder().accountId(id).amount(amount).build());
         LOGGER.info("withdrawal to accountId={}, amount= {} succeed", id, amount);
 
         return account;
@@ -84,7 +87,7 @@ public class ApiController {
     void transfer(@Valid @RequestBody MoneyTransferDto transferDto) {
         checkAmount(transferDto.getAmount());
         LOGGER.info("transfer:{}", transferDto);
-        accountService.transfer(transferDto);
+        transactionService.transfer(transferDto);
         LOGGER.info("transfer {} succeed", transferDto);
 
     }
@@ -94,7 +97,7 @@ public class ApiController {
     void internationalTransfer(@Valid @RequestBody InternationalMoneyTransferDto intTransfer) {
         checkAmount(intTransfer.getAmount());
         LOGGER.info("internationalTransfer: {}", intTransfer);
-        accountService.internationalTransfer(intTransfer);
+        transactionService.internationalTransfer(intTransfer);
         LOGGER.info("internationalTransfer {} succeed", intTransfer);
 
     }

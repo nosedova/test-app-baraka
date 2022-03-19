@@ -1,16 +1,17 @@
 package com.baraka.bankingapi.repository;
 
 import com.baraka.bankingapi.view.Account;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Built-in store
  */
-@Component
+@Repository
 public class AccountRepositoryImpl implements AccountRepository {
     /**
      * primary key generator
@@ -18,10 +19,10 @@ public class AccountRepositoryImpl implements AccountRepository {
     private Long lastId = 0L;
 
     /**
-     * Account list.
+     * Account map
      * Account ID is a key
      */
-    private final HashMap<String, Account> data = new HashMap<>();
+    private final Map<String, Account> data = new ConcurrentHashMap<>();
 
     @Override
     public Account save(Account account) {

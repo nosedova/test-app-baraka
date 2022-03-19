@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString
-public class Account {
+public class Account implements Comparable<Account> {
 
     /**
      * Row identification, primary key for database support
@@ -37,4 +37,12 @@ public class Account {
     private BigDecimal balance = BigDecimal.ZERO;
 
     private Currency currency = Currency.USD;
+
+    @Override
+    public int compareTo(Account o) {
+        if (o == null) {
+            return 1;
+        }
+        return this.getAccountId().compareTo(o.getAccountId());
+    }
 }
