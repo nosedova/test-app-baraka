@@ -6,7 +6,7 @@ import com.baraka.bankingapi.model.MoneyOperatingDto;
 import com.baraka.bankingapi.model.MoneyTransferDto;
 
 /**
- * Account service
+ * Transaction service
  */
 public interface TransactionService {
     /**

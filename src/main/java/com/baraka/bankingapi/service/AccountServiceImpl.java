@@ -1,6 +1,5 @@
 package com.baraka.bankingapi.service;
 
-import com.baraka.bankingapi.exception.AccountExistsException;
 import com.baraka.bankingapi.exception.NotFoundException;
 import com.baraka.bankingapi.mapper.AccountMapper;
 import com.baraka.bankingapi.model.ExistingAccountDto;
@@ -26,10 +25,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public ExistingAccountDto createAccount(NewAccountDto account) {
-        if (repository.getByAccountId(account.getAccountId()) != null) {
-            throw new AccountExistsException("Account already exists");
-        }
-
         Account newAccount = AccountMapper.INSTANCE.map(account);
         return AccountMapper.INSTANCE.map(repository.save(newAccount));
     }

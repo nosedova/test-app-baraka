@@ -1,5 +1,6 @@
 package com.baraka.bankingapi.repository;
 
+import com.baraka.bankingapi.exception.AccountExistsException;
 import com.baraka.bankingapi.view.Account;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +28,11 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Override
     public Account save(Account account) {
         account.setId(++lastId);
-        data.put(account.getAccountId(), account);
+        Account account1 = data.putIfAbsent(account.getAccountId(), account);
+        if (account1 != null) {
+            throw new AccountExistsException("Account already exists");
+        }
+
         return account;
     }
 
