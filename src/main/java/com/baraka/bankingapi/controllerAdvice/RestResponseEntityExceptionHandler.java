@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,9 +26,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(value = {ValidationException.class, AccountExistsException.class, NotEnoughMoneyException.class})
     protected ResponseEntity<Object> badRequest(RuntimeException ex, WebRequest request) {
-        LOGGER.error(ex.getMessage(), ex);
-        return handleExceptionInternal(ex, ex.getMessage(),
-                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return badReq(ex, request);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -58,13 +57,22 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @Override
     public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        LOGGER.error(ex.getMessage());
-        return handleExceptionInternal(ex, ex.getMessage(),
-                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return badReq(ex, request);
+
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return badReq(ex, request);
+
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return badReq(ex, request);
+    }
+
+    private ResponseEntity<Object> badReq(Exception ex, WebRequest request) {
         LOGGER.error(ex.getMessage());
         return handleExceptionInternal(ex, ex.getMessage(),
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);

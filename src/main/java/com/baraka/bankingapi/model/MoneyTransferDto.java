@@ -2,8 +2,8 @@ package com.baraka.bankingapi.model;
 
 import lombok.*;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 /**
@@ -20,14 +20,14 @@ public class MoneyTransferDto {
     /**
      * Transfer from account ID, IBAN
      */
-    @Max(34)
+    @Size(max = 34)
     @NotNull
     private String fromAccountId;
 
     /**
      * Transfer to account ID, IBAN
      */
-    @Max(34)
+    @Size(max = 34)
     @NotNull
     private String toAccountId;
 
